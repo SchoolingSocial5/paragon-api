@@ -55,9 +55,8 @@ app.use((0, cors_1.default)({
     origin: [
         'http://localhost:3000',
         'http://localhost:3001',
-        'https://paragonfarmsltd.netlify.app',
+        'https://paragonfarms.netlify.app',
         'https://paragonfarmsltd.com',
-        'https://schooling-client-v1.onrender.com',
     ],
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     credentials: true,
@@ -67,7 +66,7 @@ const io = new socket_io_1.Server(server, {
     cors: {
         origin: [
             'http://localhost:3000',
-            'https://paragonfarmsltd.netlify.app',
+            'https://paragonfarms.netlify.app',
             'https://paragonfarmsltd.com',
         ],
         methods: ['GET', 'POST'],

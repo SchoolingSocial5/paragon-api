@@ -35,8 +35,7 @@ const server = http.createServer(app)
 
 const requestLogger: RequestHandler = (req, res, next) => {
   console.log(
-    `[${new Date().toISOString()}] ${req.method} ${req.url} from ${
-      (req as any).country
+    `[${new Date().toISOString()}] ${req.method} ${req.url} from ${(req as any).country
     }`
   )
   next()
@@ -49,9 +48,8 @@ app.use(
     origin: [
       'http://localhost:3000',
       'http://localhost:3001',
-      'https://paragonfarmsltd.netlify.app',
+      'https://paragonfarms.netlify.app',
       'https://paragonfarmsltd.com',
-      'https://schooling-client-v1.onrender.com',
     ],
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     credentials: true,
@@ -63,7 +61,7 @@ const io = new Server(server, {
   cors: {
     origin: [
       'http://localhost:3000',
-      'https://paragonfarmsltd.netlify.app',
+      'https://paragonfarms.netlify.app',
       'https://paragonfarmsltd.com',
     ],
     methods: ['GET', 'POST'],
