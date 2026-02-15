@@ -80,6 +80,19 @@ export const getMarketings = async (req: Request, res: Response) => {
   }
 }
 
+export const deleteMarketing = async (req: Request, res: Response) => {
+  try {
+    const blog = await Marketing.findByIdAndDelete(req.params.id)
+    if (!blog) {
+      return res.status(404).json({ message: 'Marketing report not found' })
+    }
+    const result = await queryData<IMarketing>(Marketing, req)
+    res.status(200).json({ message: 'Marketing report deleted successfully', ...result })
+  } catch (error) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
 export const searchMarketings = (req: Request, res: Response) => {
   return search(Marketing, req, res)
 }

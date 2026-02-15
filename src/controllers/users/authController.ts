@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { User } from '../../models/users/userModel'
+import { sendEmail } from '../../utils/sendEmail'
 dotenv.config()
 
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
@@ -13,6 +14,13 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     if (!user || !user.password) {
       res.status(404).json({
         message: 'Sorry user not found username or password, try again.',
+      })
+      return
+    }
+
+    if (user.isSuspended) {
+      res.status(404).json({
+        message: 'Sorry this account is suspended at the moment, please contact support.',
       })
       return
     }
@@ -146,48 +154,102 @@ export const getAuthUser = async (
   }
 }
 
-export const fogottenPassword = async (
+export const forgottenPassword = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { email, password } = req.body
+  const { email } = req.body
+
   try {
-    const user = await User.findOne({ email })
-    if (!user) {
-      res
-        .status(404)
-        .json({ message: 'Sorry incorrect email or password, try again.' })
+    const resetCode = Math.floor(100000 + Math.random() * 900000)
+    const expiresAt = new Date(Date.now() + 30 * 60 * 1000)
+    const user = await User.findOneAndUpdate(
+      { email },
+      {
+        passwordResetCode: resetCode,
+        passwordExpiresAt: expiresAt,
+      },
+      { new: true }
+    )
+
+    if (user) {
+      await sendEmail(user.username, email, 'forgotten_password', { resetCode })
+    }
+
+    res.status(200).json({
+      message:
+        'Please visit your email for the authentication code to reset your password.',
+    })
+  } catch (error: unknown) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
+export const validateResetCode = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { email, code } = req.body
+
+  try {
+    const user = await User.findOne({ email, passwordResetCode: code })
+    if (
+      !user ||
+      !user.passwordExpiresAt ||
+      user.passwordExpiresAt < new Date()
+    ) {
+      res.status(400).json({
+        message: 'Invalid or expired authentication code.',
+      })
+    } else {
+      res.status(200).json({
+        message: 'Authentication code is valid.',
+      })
+    }
+  } catch (error: unknown) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
+export const ResetPassword = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { email, code, password } = req.body
+
+  try {
+    const user = await User.findOne({
+      email,
+      passwordResetCode: code,
+    })
+
+    if (
+      !user ||
+      !user.passwordExpiresAt ||
+      user.passwordExpiresAt < new Date()
+    ) {
+      res.status(400).json({
+        message: 'Invalid or expired authentication code.',
+      })
       return
     }
 
-    if (!user.password) {
-      res.status(400).json({ message: 'Password not set for user' })
-      return
-    }
+    const hashedPassword = await bcrypt.hash(password, 10)
 
-    const isPasswordValid = await bcrypt.compare(password, user.password)
-    if (!isPasswordValid) {
-      res
-        .status(401)
-        .json({ message: 'Sorry incorrect email or password, try again.' })
-      return
-    }
+    await User.findOneAndUpdate(
+      { email, passwordResetCode: code },
+      {
+        $set: {
+          password: hashedPassword,
+          passwordResetCode: null,
+          passwordExpiresAt: null,
+        },
+      }
+    )
 
-    // const token = jwt.sign(
-    //   { userId: user._id, email: user.email },
-    //   JWT_SECRET,
-    //   { expiresIn: "30d" }
-    // );
-
-    // res.status(200).json({
-    //   message: "Login successful",
-    //   user: {
-    //     email: user.email,
-    //     username: user.username,
-    //     phone: user.phone,
-    //   },
-    //   token,
-    // });
+    res.status(200).json({
+      message: 'Password reset successful. You can now sign in.',
+    })
   } catch (error: unknown) {
     handleError(res, undefined, undefined, error)
   }

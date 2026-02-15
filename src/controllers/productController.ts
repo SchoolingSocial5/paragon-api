@@ -18,7 +18,7 @@ export const createProduct = async (
     const result = await queryData<IProduct>(Product, req)
     res.status(200).json({
       message: 'Product is created successfully',
-      result,
+      ...result,
     })
   } catch (error: any) {
     handleError(res, undefined, undefined, error)
@@ -56,10 +56,11 @@ export const updateProduct = async (req: Request, res: Response) => {
     if (!product) {
       return res.status(404).json({ message: 'product not found' })
     }
+    const result = await queryData<IProduct>(Product, req)
 
     res.status(200).json({
       message: 'The product is updated successfully',
-      data: product,
+      ...result,
     })
   } catch (error) {
     handleError(res, undefined, undefined, error)
@@ -78,6 +79,7 @@ export const getProducts = async (req: Request, res: Response) => {
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
     await Product.findByIdAndDelete(req.params.id)
+    await Stocking.findOneAndDelete({ productId: req.params.id })
     const result = await queryData<IProduct>(Product, req)
 
     res.status(200).json(result)

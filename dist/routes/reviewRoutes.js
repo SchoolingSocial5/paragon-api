@@ -9,6 +9,7 @@ const reviewController_1 = require("../controllers/reviewController");
 const upload = (0, multer_1.default)();
 const router = express_1.default.Router();
 router.route('/search').get(reviewController_1.searchRatings);
+router.route('/mass-delete').patch(reviewController_1.deleteReviews);
 router.route('/:username').get(reviewController_1.getRating).patch(upload.any(), reviewController_1.updateRating);
 router.route('/').get(reviewController_1.getRatings).post(upload.any(), reviewController_1.createRating);
 exports.default = router;

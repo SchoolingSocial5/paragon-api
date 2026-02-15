@@ -66,6 +66,19 @@ export const getStrategies = async (req: Request, res: Response) => {
   }
 }
 
+export const deleteStrategy = async (req: Request, res: Response) => {
+  try {
+    const blog = await Strategy.findByIdAndDelete(req.params.id)
+    if (!blog) {
+      return res.status(404).json({ message: 'Strategy report not found' })
+    }
+    const result = await queryData<IStrategy>(Strategy, req)
+    res.status(200).json({ message: 'Strategy report deleted successfully', ...result })
+  } catch (error) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
 export const searchStrategies = (req: Request, res: Response) => {
   return search(Strategy, req, res)
 }

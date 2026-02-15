@@ -8,9 +8,10 @@ export interface IUser extends Document {
   email: string
   isFirstTime: boolean
   isTwoFactor: boolean
+  isSuspended: boolean
   password: string
   passwordExpiresAt: Date
-  passwordResetToken: string
+  passwordResetCode: string
   phone: string
   picture: string
   username: string
@@ -43,11 +44,12 @@ const UserSchema: Schema = new Schema(
       minlength: [6, 'Password must be at least 6 characters long'],
       select: false,
     },
-    passwordExpiresAt: { type: Date, default: null },
-    passwordResetToken: { type: String, default: null },
+    passwordExpiresAt: { type: Date, },
+    passwordResetCode: { type: String, },
     phone: { type: String },
     picture: { type: String },
     address: { type: String },
+    roles: { type: String },
     username: { type: String },
     staffPositions: { type: String },
     staffRanking: { type: Number },

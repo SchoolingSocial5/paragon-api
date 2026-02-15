@@ -9,8 +9,9 @@ const upload = (0, multer_1.default)();
 const emailController_1 = require("../controllers/message/emailController");
 const notificationTemplateController_1 = require("../controllers/message/notificationTemplateController");
 const router = express_1.default.Router();
+router.route('/mass-delete').patch(upload.any(), emailController_1.deleteEmails);
 router.route('/').get(emailController_1.getEmails).post(upload.any(), emailController_1.createEmail);
-router.route('/send/:id').post(upload.any(), emailController_1.sendEmailToUsers);
+router.route('/send/:id').patch(upload.any(), emailController_1.sendEmailToUsers);
 router
     .route('/templates')
     .get(notificationTemplateController_1.getNotificationTemplates)
@@ -22,6 +23,5 @@ router
 router
     .route('/:id')
     .get(emailController_1.getEmailById)
-    .patch(upload.any(), emailController_1.updateEmail)
-    .delete(emailController_1.deleteEmail);
+    .patch(upload.any(), emailController_1.updateEmail);
 exports.default = router;

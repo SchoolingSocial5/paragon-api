@@ -22,10 +22,7 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
         yield productModel_1.Product.create(req.body);
         const result = yield (0, query_1.queryData)(productModel_1.Product, req);
-        res.status(200).json({
-            message: 'Product is created successfully',
-            result,
-        });
+        res.status(200).json(Object.assign({ message: 'Product is created successfully' }, result));
     }
     catch (error) {
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
@@ -59,10 +56,8 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         if (!product) {
             return res.status(404).json({ message: 'product not found' });
         }
-        res.status(200).json({
-            message: 'The product is updated successfully',
-            data: product,
-        });
+        const result = yield (0, query_1.queryData)(productModel_1.Product, req);
+        res.status(200).json(Object.assign({ message: 'The product is updated successfully' }, result));
     }
     catch (error) {
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
@@ -82,6 +77,7 @@ exports.getProducts = getProducts;
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield productModel_1.Product.findByIdAndDelete(req.params.id);
+        yield productModel_1.Stocking.findOneAndDelete({ productId: req.params.id });
         const result = yield (0, query_1.queryData)(productModel_1.Product, req);
         res.status(200).json(result);
     }

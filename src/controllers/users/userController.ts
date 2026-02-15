@@ -94,6 +94,25 @@ export const searchAccounts = (req: Request, res: Response) => {
   return search(User, req, res)
 }
 
+export const suspendUsers = async (req: Request, res: Response) => {
+  try {
+    const users = req.body.selectedUsers
+    for (const user of users) {
+      await User.findByIdAndUpdate(user._id, {
+        $set: { isSuspended: !user.isSuspended }
+      })
+    }
+    const result = await queryData<IUser>(User, req)
+
+    return res.status(207).json({
+      message: 'The users suspension status was updated successfully.',
+      result
+    })
+  } catch (error) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
 export const MakeUserStaff = async (
   req: Request,
   res: Response

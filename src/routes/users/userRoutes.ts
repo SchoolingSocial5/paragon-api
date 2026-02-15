@@ -5,6 +5,9 @@ import {
   loginUser,
   getCurrentUser,
   updatePassword,
+  forgottenPassword,
+  validateResetCode,
+  ResetPassword,
 } from '../../controllers/users/authController'
 import {
   getAUser,
@@ -17,14 +20,18 @@ import {
   MakeUserStaff,
   MakeStaffUser,
   deleteUser,
+  suspendUsers,
 } from '../../controllers/users/userController'
 
 const router = express.Router()
 router.route('/create-account')
 router.route('/username/:username').get(getExistingUsername)
 router.route('/login').post(upload.any(), loginUser)
-
+router.route('/forgot-password').post(upload.any(), forgottenPassword)
+router.route('/reset-code').post(upload.any(), validateResetCode)
+router.route('/reset-password').post(upload.any(), ResetPassword)
 router.route('/auth').get(getCurrentUser)
+router.route('/suspend').patch(suspendUsers)
 
 router.route('/search').get(searchAccounts)
 router.route('/suspend').get(searchAccounts)

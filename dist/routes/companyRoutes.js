@@ -9,6 +9,7 @@ const companyController_1 = require("../controllers/company/companyController");
 const upload = (0, multer_1.default)();
 const router = express_1.default.Router();
 router.route('/').get(companyController_1.getCompany).patch(upload.any(), companyController_1.updateCompany);
+router.route('/reset').patch(upload.any(), companyController_1.resetRecord);
 router.route('/policy').get(companyController_1.getPolcies).post(upload.any(), companyController_1.createPolicy);
 router.route('/positions').get(companyController_1.getPositions).post(upload.any(), companyController_1.createPosition);
 router

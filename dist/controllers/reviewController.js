@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchRatings = exports.getRatings = exports.updateRating = exports.getRating = exports.createRating = void 0;
+exports.searchRatings = exports.deleteReviews = exports.getRatings = exports.updateRating = exports.getRating = exports.createRating = void 0;
 const query_1 = require("../utils/query");
 const fileUpload_1 = require("../utils/fileUpload");
 const errorHandler_1 = require("../utils/errorHandler");
@@ -59,10 +59,8 @@ const updateRating = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             runValidators: true,
             upsert: true,
         });
-        res.status(200).json({
-            message: 'The rating is updated successfully',
-            data: rating,
-        });
+        const result = yield (0, query_1.queryData)(ratingModel_1.Rating, req);
+        res.status(200).json(Object.assign({ message: 'The rating is updated successfully', data: rating }, result));
     }
     catch (error) {
         (0, errorHandler_1.handleError)(res, undefined, undefined, error);
@@ -79,6 +77,21 @@ const getRatings = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getRatings = getRatings;
+const deleteReviews = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const ids = req.body.ids;
+        for (let x = 0; x < ids.length; x++) {
+            const id = ids[x];
+            yield ratingModel_1.Rating.findByIdAndDelete(id);
+        }
+        const result = yield (0, query_1.queryData)(ratingModel_1.Rating, req);
+        res.status(200).json(Object.assign({ message: 'Rating report deleted successfully' }, result));
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.deleteReviews = deleteReviews;
 const searchRatings = (req, res) => {
     return (0, query_1.search)(ratingModel_1.Rating, req, res);
 };

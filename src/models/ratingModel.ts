@@ -16,6 +16,7 @@ const RatingSchema: Schema = new Schema(
     review: { type: String },
     username: { type: String },
     fullName: { type: String },
+    status: { type: Boolean },
     picture: { type: String },
     createdAt: { type: Date, default: Date.now },
   },

@@ -9,10 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePosition = exports.getPositions = exports.getPositionById = exports.createPosition = exports.deletePolicy = exports.updatePolicy = exports.getPolcies = exports.getPolicyById = exports.createPolicy = exports.getCompany = exports.getCompanyById = exports.updateCompany = void 0;
+exports.updatePosition = exports.getPositions = exports.getPositionById = exports.createPosition = exports.deletePolicy = exports.updatePolicy = exports.getPolcies = exports.getPolicyById = exports.createPolicy = exports.resetRecord = exports.getCompany = exports.getCompanyById = exports.updateCompany = void 0;
 const errorHandler_1 = require("../../utils/errorHandler");
 const companyModel_1 = require("../../models/company/companyModel");
 const query_1 = require("../../utils/query");
+const userModel_1 = require("../../models/users/userModel");
+const transactionModel_1 = require("../../models/transactionModel");
+const productModel_1 = require("../../models/productModel");
+const equipmentModel_1 = require("../../models/equipmentModel");
 const updateCompany = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (req.body.id) {
@@ -55,6 +59,20 @@ const getCompany = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getCompany = getCompany;
+const resetRecord = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield transactionModel_1.Transaction.deleteMany();
+        yield equipmentModel_1.Equipment.deleteMany();
+        yield productModel_1.Product.updateMany({}, { $set: { units: 0 } });
+        yield productModel_1.Stocking.updateMany({}, { $set: { units: 0, amount: 0 } });
+        yield userModel_1.User.updateMany({}, { $set: { totalPurchase: 0 } });
+        res.status(200).json({ message: 'The records where all reset successfully.' });
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.resetRecord = resetRecord;
 //-----------------TERMS & CONDITIONS--------------------//
 const createPolicy = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     (0, query_1.createItem)(req, res, companyModel_1.Policy, 'Policy was created successfully');

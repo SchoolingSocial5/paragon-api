@@ -13,6 +13,10 @@ import {
   createItem,
   deleteItem,
 } from '../../utils/query'
+import { User } from '../../models/users/userModel'
+import { Transaction } from '../../models/transactionModel'
+import { Product, Stocking } from '../../models/productModel'
+import { Equipment } from '../../models/equipmentModel'
 
 export const updateCompany = async (
   req: Request,
@@ -53,6 +57,23 @@ export const getCompany = async (req: Request, res: Response) => {
   try {
     const company = await Company.findOne()
     res.status(200).json({ company })
+  } catch (error) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
+export const resetRecord = async (
+  req: Request,
+  res: Response
+): Promise<Response | void> => {
+  try {
+    await Transaction.deleteMany()
+    await Equipment.deleteMany()
+    await Product.updateMany({}, { $set: { units: 0 } });
+    await Stocking.updateMany({}, { $set: { units: 0, amount: 0 } });
+    await User.updateMany({}, { $set: { totalPurchase: 0 } });
+
+    res.status(200).json({ message: 'The records where all reset successfully.' })
   } catch (error) {
     handleError(res, undefined, undefined, error)
   }

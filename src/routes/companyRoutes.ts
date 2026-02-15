@@ -9,6 +9,7 @@ import {
   getPolicyById,
   getPositionById,
   getPositions,
+  resetRecord,
   updateCompany,
   updatePolicy,
   updatePosition,
@@ -18,6 +19,7 @@ const upload = multer()
 const router = express.Router()
 
 router.route('/').get(getCompany).patch(upload.any(), updateCompany)
+router.route('/reset').patch(upload.any(), resetRecord)
 router.route('/policy').get(getPolcies).post(upload.any(), createPolicy)
 router.route('/positions').get(getPositions).post(upload.any(), createPosition)
 

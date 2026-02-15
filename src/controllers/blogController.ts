@@ -75,6 +75,36 @@ export const getBlogs = async (req: Request, res: Response) => {
   }
 }
 
+export const deleteBlog = async (req: Request, res: Response) => {
+  try {
+    const blog = await Blog.findByIdAndDelete(req.params.id)
+    if (!blog) {
+      return res.status(404).json({ message: 'blog not found' })
+    }
+    const result = await queryData<IBlog>(Blog, req)
+    res.status(200).json({ message: 'Blog deleted successfully', ...result })
+  } catch (error) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
+export const deleteBlogs = async (req: Request, res: Response) => {
+  try {
+    const blogs = req.body.selectedUsers
+    for (const e of blogs) {
+      await Blog.findByIdAndDelete(e._id)
+    }
+    const result = await queryData<IBlog>(Blog, req)
+
+    return res.status(207).json({
+      message: 'The blogs were deleted successfully.',
+      result
+    })
+  } catch (error) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
 export const searchBlogs = (req: Request, res: Response) => {
   return search(Blog, req, res)
 }

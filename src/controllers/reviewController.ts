@@ -59,9 +59,11 @@ export const updateRating = async (req: Request, res: Response) => {
       }
     )
 
+    const result = await queryData<IRating>(Rating, req)
     res.status(200).json({
       message: 'The rating is updated successfully',
       data: rating,
+      ...result
     })
   } catch (error) {
     handleError(res, undefined, undefined, error)
@@ -72,6 +74,20 @@ export const getRatings = async (req: Request, res: Response) => {
   try {
     const result = await queryData<IRating>(Rating, req)
     res.status(200).json(result)
+  } catch (error) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
+export const deleteReviews = async (req: Request, res: Response) => {
+  try {
+    const ids = req.body.ids
+    for (let x = 0; x < ids.length; x++) {
+      const id = ids[x];
+      await Rating.findByIdAndDelete(id)
+    }
+    const result = await queryData<IRating>(Rating, req)
+    res.status(200).json({ message: 'Rating report deleted successfully', ...result })
   } catch (error) {
     handleError(res, undefined, undefined, error)
   }

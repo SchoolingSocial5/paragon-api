@@ -17,6 +17,7 @@ import equipmentRoutes from './routes/equipmentRoutes'
 import visitorRoutes from './routes/visitorRoutes'
 import expenseRoutes from './routes/expenseRoutes'
 import notificationRoutes from './routes/notificationRoutes'
+import operationRoutes from './routes/operationRoutes'
 import productRoutes from './routes/productRoutes'
 import reviewRoutes from './routes/reviewRoutes'
 import socialRoutes from './routes/socialRoutes'
@@ -104,6 +105,7 @@ app.use('/api/v1/equipments', equipmentRoutes)
 app.use('/api/v1/emails', emailRoutes)
 app.use('/api/v1/expenses', expenseRoutes)
 app.use('/api/v1/notifications', notificationRoutes)
+app.use('/api/v1/operations', operationRoutes)
 app.use('/api/v1/products', productRoutes)
 app.use('/api/v1/reviews', reviewRoutes)
 app.use('/api/v1/transactions', transactionRoutes)

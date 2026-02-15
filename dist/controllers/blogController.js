@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchBlogs = exports.getBlogs = exports.updateBlog = exports.getABlog = exports.createBlog = void 0;
+exports.searchBlogs = exports.deleteBlogs = exports.deleteBlog = exports.getBlogs = exports.updateBlog = exports.getABlog = exports.createBlog = void 0;
 const query_1 = require("../utils/query");
 const fileUpload_1 = require("../utils/fileUpload");
 const errorHandler_1 = require("../utils/errorHandler");
@@ -79,6 +79,37 @@ const getBlogs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getBlogs = getBlogs;
+const deleteBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const blog = yield blogModel_1.Blog.findByIdAndDelete(req.params.id);
+        if (!blog) {
+            return res.status(404).json({ message: 'blog not found' });
+        }
+        const result = yield (0, query_1.queryData)(blogModel_1.Blog, req);
+        res.status(200).json(Object.assign({ message: 'Blog deleted successfully' }, result));
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.deleteBlog = deleteBlog;
+const deleteBlogs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const blogs = req.body.selectedUsers;
+        for (const e of blogs) {
+            yield blogModel_1.Blog.findByIdAndDelete(e._id);
+        }
+        const result = yield (0, query_1.queryData)(blogModel_1.Blog, req);
+        return res.status(207).json({
+            message: 'The blogs were deleted successfully.',
+            result
+        });
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.deleteBlogs = deleteBlogs;
 const searchBlogs = (req, res) => {
     return (0, query_1.search)(blogModel_1.Blog, req, res);
 };

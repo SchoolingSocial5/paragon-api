@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getExistingUsername = exports.deleteUser = exports.getUsers = exports.deleteMyData = exports.MakeStaffUser = exports.MakeUserStaff = exports.searchAccounts = exports.updateUserStatus = exports.updateUser = exports.getAUser = exports.createUser = void 0;
+exports.getExistingUsername = exports.deleteUser = exports.getUsers = exports.deleteMyData = exports.MakeStaffUser = exports.MakeUserStaff = exports.suspendUsers = exports.searchAccounts = exports.updateUserStatus = exports.updateUser = exports.getAUser = exports.createUser = void 0;
 const errorHandler_1 = require("../../utils/errorHandler");
 const query_1 = require("../../utils/query");
 const fileUpload_1 = require("../../utils/fileUpload");
@@ -97,6 +97,25 @@ const searchAccounts = (req, res) => {
     return (0, query_1.search)(userModel_1.User, req, res);
 };
 exports.searchAccounts = searchAccounts;
+const suspendUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = req.body.selectedUsers;
+        for (const user of users) {
+            yield userModel_1.User.findByIdAndUpdate(user._id, {
+                $set: { isSuspended: !user.isSuspended }
+            });
+        }
+        const result = yield (0, query_1.queryData)(userModel_1.User, req);
+        return res.status(207).json({
+            message: 'The users suspension status was updated successfully.',
+            result
+        });
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.suspendUsers = suspendUsers;
 const MakeUserStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield userModel_1.User.findByIdAndUpdate(req.body.id, { status: 'Staff' }, { new: true });

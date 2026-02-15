@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchSocials = exports.getSocials = exports.updateSocial = exports.getSocial = exports.createSocial = void 0;
+exports.searchSocials = exports.deleteSocial = exports.getSocials = exports.updateSocial = exports.getSocial = exports.createSocial = void 0;
 const query_1 = require("../utils/query");
 const fileUpload_1 = require("../utils/fileUpload");
 const errorHandler_1 = require("../utils/errorHandler");
@@ -80,6 +80,20 @@ const getSocials = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.getSocials = getSocials;
+const deleteSocial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const blog = yield socialModel_1.Social.findByIdAndDelete(req.params.id);
+        if (!blog) {
+            return res.status(404).json({ message: 'Social report not found' });
+        }
+        const result = yield (0, query_1.queryData)(socialModel_1.Social, req);
+        res.status(200).json(Object.assign({ message: 'Social report deleted successfully' }, result));
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.deleteSocial = deleteSocial;
 const searchSocials = (req, res) => {
     return (0, query_1.search)(socialModel_1.Social, req, res);
 };

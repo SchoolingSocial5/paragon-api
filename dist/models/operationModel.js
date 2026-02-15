@@ -33,17 +33,21 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Rating = void 0;
+exports.Operation = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const RatingSchema = new mongoose_1.Schema({
-    rating: { type: Number },
-    review: { type: String },
-    username: { type: String },
-    fullName: { type: String },
-    status: { type: Boolean },
-    picture: { type: String },
+const OperationSchema = new mongoose_1.Schema({
+    livestockNumber: { type: Number },
+    livestockAge: { type: String },
+    operation: { type: String },
+    livestock: { type: String },
+    weight: { type: String },
+    remark: { type: String },
+    medication: { type: String },
+    quantity: { type: String },
+    staffName: { type: String },
+    userId: { type: String },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,
 });
-exports.Rating = mongoose_1.default.model('Rating', RatingSchema);
+exports.Operation = mongoose_1.default.model('Operation', OperationSchema);

@@ -9,6 +9,6 @@ const strategyController_1 = require("../controllers/strategyController");
 const upload = (0, multer_1.default)();
 const router = express_1.default.Router();
 router.route('/search').get(strategyController_1.searchStrategies);
-router.route('/:id').get(strategyController_1.getStrategy).patch(upload.any(), strategyController_1.updateStrategy);
+router.route('/:id').get(strategyController_1.getStrategy).patch(upload.any(), strategyController_1.updateStrategy).delete(upload.any(), strategyController_1.deleteStrategy);
 router.route('/').get(strategyController_1.getStrategies).post(upload.any(), strategyController_1.createStrategy);
 exports.default = router;

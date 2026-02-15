@@ -6,9 +6,9 @@ import {
   getEmailById,
   getEmails,
   updateEmail,
-  deleteEmail,
   createEmail,
   sendEmailToUsers,
+  deleteEmails,
 } from '../controllers/message/emailController'
 import {
   createNotificationTemplate,
@@ -19,8 +19,9 @@ import {
 
 const router = express.Router()
 
+router.route('/mass-delete').patch(upload.any(), deleteEmails)
 router.route('/').get(getEmails).post(upload.any(), createEmail)
-router.route('/send/:id').post(upload.any(), sendEmailToUsers)
+router.route('/send/:id').patch(upload.any(), sendEmailToUsers)
 
 router
   .route('/templates')
@@ -36,6 +37,5 @@ router
   .route('/:id')
   .get(getEmailById)
   .patch(upload.any(), updateEmail)
-  .delete(deleteEmail)
 
 export default router

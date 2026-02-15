@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.searchMarketings = exports.getMarketings = exports.updateMarketing = exports.getMarketing = exports.createMarketing = void 0;
+exports.searchMarketings = exports.deleteMarketing = exports.getMarketings = exports.updateMarketing = exports.getMarketing = exports.createMarketing = void 0;
 const query_1 = require("../utils/query");
 const fileUpload_1 = require("../utils/fileUpload");
 const errorHandler_1 = require("../utils/errorHandler");
@@ -80,6 +80,20 @@ const getMarketings = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.getMarketings = getMarketings;
+const deleteMarketing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const blog = yield marketingModel_1.Marketing.findByIdAndDelete(req.params.id);
+        if (!blog) {
+            return res.status(404).json({ message: 'Marketing report not found' });
+        }
+        const result = yield (0, query_1.queryData)(marketingModel_1.Marketing, req);
+        res.status(200).json(Object.assign({ message: 'Marketing report deleted successfully' }, result));
+    }
+    catch (error) {
+        (0, errorHandler_1.handleError)(res, undefined, undefined, error);
+    }
+});
+exports.deleteMarketing = deleteMarketing;
 const searchMarketings = (req, res) => {
     return (0, query_1.search)(marketingModel_1.Marketing, req, res);
 };
