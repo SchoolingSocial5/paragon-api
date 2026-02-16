@@ -17,6 +17,7 @@ const userModel_1 = require("../../models/users/userModel");
 const transactionModel_1 = require("../../models/transactionModel");
 const productModel_1 = require("../../models/productModel");
 const equipmentModel_1 = require("../../models/equipmentModel");
+const activityModel_1 = require("../../models/activityModel");
 const updateCompany = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (req.body.id) {
@@ -62,6 +63,7 @@ exports.getCompany = getCompany;
 const resetRecord = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield transactionModel_1.Transaction.deleteMany();
+        yield activityModel_1.Activity.deleteMany();
         yield equipmentModel_1.Equipment.deleteMany();
         yield productModel_1.Product.updateMany({}, { $set: { units: 0 } });
         yield productModel_1.Stocking.updateMany({}, { $set: { units: 0, amount: 0 } });

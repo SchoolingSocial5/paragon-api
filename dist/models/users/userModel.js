@@ -60,6 +60,7 @@ const UserSchema = new mongoose_1.Schema({
     phone: { type: String },
     picture: { type: String },
     address: { type: String },
+    playSound: { type: Boolean },
     roles: { type: String },
     username: { type: String },
     staffPositions: { type: String },

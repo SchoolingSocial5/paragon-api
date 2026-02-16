@@ -17,6 +17,7 @@ import { User } from '../../models/users/userModel'
 import { Transaction } from '../../models/transactionModel'
 import { Product, Stocking } from '../../models/productModel'
 import { Equipment } from '../../models/equipmentModel'
+import { Activity } from '../../models/activityModel'
 
 export const updateCompany = async (
   req: Request,
@@ -68,6 +69,7 @@ export const resetRecord = async (
 ): Promise<Response | void> => {
   try {
     await Transaction.deleteMany()
+    await Activity.deleteMany()
     await Equipment.deleteMany()
     await Product.updateMany({}, { $set: { units: 0 } });
     await Stocking.updateMany({}, { $set: { units: 0, amount: 0 } });

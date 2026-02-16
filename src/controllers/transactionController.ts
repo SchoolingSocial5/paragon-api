@@ -167,7 +167,7 @@ export const createTrasanction = async (req: Request, res: Response) => {
     }
 
     if (req.body.from) {
-      io.emit(`admin`, {
+      io.emit(`purchase`, {
         transaction,
         notification: notificationResult.notification,
         unread: notificationResult.unread,

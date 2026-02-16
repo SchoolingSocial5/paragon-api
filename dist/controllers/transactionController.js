@@ -149,7 +149,7 @@ const createTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, functi
             });
         }
         if (req.body.from) {
-            app_1.io.emit(`admin`, {
+            app_1.io.emit(`purchase`, {
                 transaction,
                 notification: notificationResult.notification,
                 unread: notificationResult.unread,

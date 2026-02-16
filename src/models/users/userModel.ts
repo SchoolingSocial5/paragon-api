@@ -49,6 +49,7 @@ const UserSchema: Schema = new Schema(
     phone: { type: String },
     picture: { type: String },
     address: { type: String },
+    playSound: { type: Boolean },
     roles: { type: String },
     username: { type: String },
     staffPositions: { type: String },
