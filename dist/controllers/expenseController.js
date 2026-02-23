@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getExpenses = exports.updateExpense = exports.getExpense = exports.createExpense = void 0;
+exports.getLatestExpenses = exports.getExpenses = exports.updateExpense = exports.getExpense = exports.createExpense = void 0;
 const query_1 = require("../utils/query");
 const fileUpload_1 = require("../utils/fileUpload");
 const errorHandler_1 = require("../utils/errorHandler");
@@ -80,3 +80,23 @@ const getExpenses = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getExpenses = getExpenses;
+const getLatestExpenses = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const expenses = yield expenseModel_1.Expense.find()
+            .sort({ createdAt: -1 }) // newest first
+            .limit(5);
+        res.status(200).json({
+            success: true,
+            count: expenses.length,
+            results: expenses,
+        });
+    }
+    catch (error) {
+        console.error("Error fetching latest expenses:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to fetch latest expenses",
+        });
+    }
+});
+exports.getLatestExpenses = getLatestExpenses;

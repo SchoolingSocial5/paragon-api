@@ -75,3 +75,27 @@ export const getExpenses = async (req: Request, res: Response) => {
     handleError(res, undefined, undefined, error)
   }
 }
+
+export const getLatestExpenses = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const expenses = await Expense.find()
+      .sort({ createdAt: -1 }) // newest first
+      .limit(5);
+
+    res.status(200).json({
+      success: true,
+      count: expenses.length,
+      results: expenses,
+    });
+  } catch (error) {
+    console.error("Error fetching latest expenses:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch latest expenses",
+    });
+  }
+};

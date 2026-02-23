@@ -118,7 +118,7 @@ const suspendUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.suspendUsers = suspendUsers;
 const MakeUserStaff = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield userModel_1.User.findByIdAndUpdate(req.body.id, { status: 'Staff' }, { new: true });
+        yield userModel_1.User.findByIdAndUpdate(req.body.id, { status: 'Staff', roles: "" }, { new: true });
         const result = yield (0, query_1.queryData)(userModel_1.User, req);
         res.status(200).json({
             message: 'The user has successfully been made staff.',

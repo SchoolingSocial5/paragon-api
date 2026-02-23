@@ -10,4 +10,5 @@ const upload = (0, multer_1.default)();
 const router = express_1.default.Router();
 router.route('/:id').get(expenseController_1.getExpense).patch(upload.any(), expenseController_1.updateExpense);
 router.route('/').get(expenseController_1.getExpenses).post(upload.any(), expenseController_1.createExpense);
+router.route('/latest').get(expenseController_1.getLatestExpenses);
 exports.default = router;

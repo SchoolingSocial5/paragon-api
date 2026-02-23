@@ -25,7 +25,7 @@ router
     .route('/:username')
     .get(userController_1.getAUser)
     .patch(upload.any(), userController_1.updateUser)
-    .post(upload.any(), authController_1.updatePassword);
-router.route('/:id').patch(userController_1.MakeStaffUser).delete(userController_1.deleteUser);
+    .post(upload.any(), authController_1.updatePassword).delete(userController_1.deleteUser);
+router.route('/make-user/:id').patch(upload.any(), userController_1.MakeStaffUser);
 router.route('/').get(userController_1.getUsers).post(upload.any(), userController_1.createUser);
 exports.default = router;

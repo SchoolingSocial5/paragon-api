@@ -42,9 +42,9 @@ router
   .route('/:username')
   .get(getAUser)
   .patch(upload.any(), updateUser)
-  .post(upload.any(), updatePassword)
+  .post(upload.any(), updatePassword).delete(deleteUser)
 
-router.route('/:id').patch(MakeStaffUser).delete(deleteUser)
+router.route('/make-user/:id').patch(upload.any(), MakeStaffUser)
 router.route('/').get(getUsers).post(upload.any(), createUser)
 
 export default router

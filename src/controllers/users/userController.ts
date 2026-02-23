@@ -120,7 +120,7 @@ export const MakeUserStaff = async (
   try {
     await User.findByIdAndUpdate(
       req.body.id,
-      { status: 'Staff' },
+      { status: 'Staff', roles: "" },
       { new: true }
     )
 
@@ -139,6 +139,7 @@ export const MakeStaffUser = async (
   res: Response
 ): Promise<void> => {
   try {
+
     await User.findByIdAndUpdate(req.params.id, req.body)
 
     const result = await queryData<IUser>(User, req)
@@ -187,7 +188,6 @@ export const deleteUser = async (req: Request, res: Response) => {
     handleError(res, undefined, undefined, error)
   }
 }
-
 //-----------------INFO--------------------//
 export const getExistingUsername = async (
   req: Request,
