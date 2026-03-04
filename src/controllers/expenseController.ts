@@ -3,6 +3,7 @@ import { queryData, search } from '../utils/query'
 import { uploadFilesToS3 } from '../utils/fileUpload'
 import { handleError } from '../utils/errorHandler'
 import { Expense, IExpense } from '../models/expenseModel'
+import { io } from '../app'
 
 export const createExpense = async (
   req: Request,
@@ -14,8 +15,9 @@ export const createExpense = async (
       req.body[file.fieldName] = file.s3Url
     })
 
-    await Expense.create(req.body)
+    const expenses = await Expense.create(req.body)
     const result = await queryData<IExpense>(Expense, req)
+    io.emit("expenses", { expenses })
     res.status(200).json({
       message: 'Expense was created successfully',
       result,

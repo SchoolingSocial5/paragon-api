@@ -174,6 +174,8 @@ export const createTrasanction = async (req: Request, res: Response) => {
       })
     }
 
+    io.emit('transaction', { transaction })
+
     const result = await queryData<IProduct>(Product, req)
     res.status(200).json({
       message: 'The transaction has been created successfully.',

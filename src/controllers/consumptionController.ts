@@ -4,6 +4,7 @@ import { uploadFilesToS3 } from '../utils/fileUpload'
 import { handleError } from '../utils/errorHandler'
 import { IConsumption, Consumption } from '../models/consumptionModel'
 import { Product } from '../models/productModel'
+import { io } from '../app'
 
 export const createConsumption = async (
   req: Request,
@@ -18,8 +19,9 @@ export const createConsumption = async (
     await Product.findByIdAndUpdate(req.body.feedId, {
       $inc: { units: -1 * (req.body.consumption || 1) },
     })
-    await Consumption.create(req.body)
+    const consumption = await Consumption.create(req.body)
     const result = await queryData<IConsumption>(Consumption, req)
+    io.emit("consumption", { consumption })
     res.status(200).json({
       message: 'Consumption was created successfully',
       result,

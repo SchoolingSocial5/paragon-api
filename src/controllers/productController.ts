@@ -3,6 +3,7 @@ import { IProduct, IStocking, Product, Stocking } from '../models/productModel'
 import { queryData, search } from '../utils/query'
 import { uploadFilesToS3 } from '../utils/fileUpload'
 import { handleError } from '../utils/errorHandler'
+import { io } from '../app'
 
 export const createProduct = async (
   req: Request,
@@ -92,24 +93,82 @@ export const searchProducts = (req: Request, res: Response) => {
   return search(Product, req, res)
 }
 
+// export const postProductStock = async (
+//   req: Request,
+//   res: Response
+// ): Promise<void> => {
+//   try {
+//     const isProfit = req.body.isProfit === true || req.body.isProfit === 'true'
+//     const units = Number(req.body.units)
+
+//     if (isNaN(units)) {
+//       res.status(400).json({ message: 'Invalid units value' })
+//     }
+
+//     await Product.findByIdAndUpdate(req.body.productId, {
+//       $inc: { units: isProfit ? units : -units },
+//     })
+
+//     const stocking = await Stocking.create(req.body)
+//     const result = await queryData<IStocking>(Stocking, req)
+//     io.emit("stocking", { stocking, production: stocking })
+//     if (!isProfit) {
+//       io.emit("motality", { stocking })
+
+//     }
+//     res.status(200).json({
+//       message: 'Product stock record has been created successfully',
+//       result,
+//     })
+//   } catch (error: any) {
+//     handleError(res, undefined, undefined, error)
+//   }
+// }
+
 export const postProductStock = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const isProfit = req.body.isProfit === true || req.body.isProfit === 'true'
+    const isProfit =
+      req.body.isProfit === true || req.body.isProfit === 'true'
+
     const units = Number(req.body.units)
 
-    if (isNaN(units)) {
+    if (isNaN(units) || units <= 0) {
       res.status(400).json({ message: 'Invalid units value' })
+      return
     }
 
+    const product = await Product.findById(req.body.productId)
+
+    if (!product) {
+      res.status(404).json({ message: 'Product not found' })
+      return
+    }
+
+    // ✅ Prevent stock going below 0
+    if (!isProfit && product.units < units) {
+      res.status(400).json({
+        message: 'Insufficient stock available',
+      })
+      return
+    }
+
+    // ✅ Update safely
     await Product.findByIdAndUpdate(req.body.productId, {
       $inc: { units: isProfit ? units : -units },
     })
 
-    await Stocking.create(req.body)
+    const stocking = await Stocking.create(req.body)
+
     const result = await queryData<IStocking>(Stocking, req)
+
+    io.emit('stocking', { stocking, production: stocking })
+
+    if (!isProfit) {
+      io.emit('motality', { stocking })
+    }
 
     res.status(200).json({
       message: 'Product stock record has been created successfully',

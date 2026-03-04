@@ -155,6 +155,7 @@ const createTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 unread: notificationResult.unread,
             });
         }
+        app_1.io.emit('transaction', { transaction });
         const result = yield (0, query_1.queryData)(productModel_1.Product, req);
         res.status(200).json({
             message: 'The transaction has been created successfully.',

@@ -14,14 +14,16 @@ const query_1 = require("../utils/query");
 const fileUpload_1 = require("../utils/fileUpload");
 const errorHandler_1 = require("../utils/errorHandler");
 const expenseModel_1 = require("../models/expenseModel");
+const app_1 = require("../app");
 const createExpense = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const uploadedFiles = yield (0, fileUpload_1.uploadFilesToS3)(req);
         uploadedFiles.forEach((file) => {
             req.body[file.fieldName] = file.s3Url;
         });
-        yield expenseModel_1.Expense.create(req.body);
+        const expenses = yield expenseModel_1.Expense.create(req.body);
         const result = yield (0, query_1.queryData)(expenseModel_1.Expense, req);
+        app_1.io.emit("expenses", { expenses });
         res.status(200).json({
             message: 'Expense was created successfully',
             result,

@@ -15,6 +15,7 @@ const fileUpload_1 = require("../utils/fileUpload");
 const errorHandler_1 = require("../utils/errorHandler");
 const consumptionModel_1 = require("../models/consumptionModel");
 const productModel_1 = require("../models/productModel");
+const app_1 = require("../app");
 const createConsumption = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const uploadedFiles = yield (0, fileUpload_1.uploadFilesToS3)(req);
@@ -24,8 +25,9 @@ const createConsumption = (req, res) => __awaiter(void 0, void 0, void 0, functi
         yield productModel_1.Product.findByIdAndUpdate(req.body.feedId, {
             $inc: { units: -1 * (req.body.consumption || 1) },
         });
-        yield consumptionModel_1.Consumption.create(req.body);
+        const consumption = yield consumptionModel_1.Consumption.create(req.body);
         const result = yield (0, query_1.queryData)(consumptionModel_1.Consumption, req);
+        app_1.io.emit("consumption", { consumption });
         res.status(200).json({
             message: 'Consumption was created successfully',
             result,
