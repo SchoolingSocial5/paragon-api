@@ -21,6 +21,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const errorHandler_1 = require("./utils/errorHandler");
 const blogRoutes_1 = __importDefault(require("./routes/blogRoutes"));
+const applicationRoutes_1 = __importDefault(require("./routes/applicationRoutes"));
 const companyRoutes_1 = __importDefault(require("./routes/companyRoutes"));
 const consumptionRoutes_1 = __importDefault(require("./routes/consumptionRoutes"));
 const faqRoutes_1 = __importDefault(require("./routes/faqRoutes"));
@@ -31,11 +32,13 @@ const emailRoutes_1 = __importDefault(require("./routes/emailRoutes"));
 const equipmentRoutes_1 = __importDefault(require("./routes/equipmentRoutes"));
 const visitorRoutes_1 = __importDefault(require("./routes/visitorRoutes"));
 const expenseRoutes_1 = __importDefault(require("./routes/expenseRoutes"));
+const summaryRoutes_1 = __importDefault(require("./routes/summaryRoutes"));
 const notificationRoutes_1 = __importDefault(require("./routes/notificationRoutes"));
 const operationRoutes_1 = __importDefault(require("./routes/operationRoutes"));
 const productRoutes_1 = __importDefault(require("./routes/productRoutes"));
 const reviewRoutes_1 = __importDefault(require("./routes/reviewRoutes"));
 const socialRoutes_1 = __importDefault(require("./routes/socialRoutes"));
+const salaryRoutes_1 = __importDefault(require("./routes/salaryRoutes"));
 const transactionRoutes_1 = __importDefault(require("./routes/transactionRoutes"));
 const userRoutes_1 = __importDefault(require("./routes/users/userRoutes"));
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
@@ -56,6 +59,7 @@ app.use((0, cors_1.default)({
     origin: [
         'http://localhost:3000',
         'http://localhost:3001',
+        'http://localhost:3002',
         'https://paragonfarms.netlify.app',
         'https://paragonfarmsltd.com',
     ],
@@ -67,6 +71,8 @@ const io = new socket_io_1.Server(server, {
     cors: {
         origin: [
             'http://localhost:3000',
+            'http://localhost:3001',
+            'http://localhost:3002',
             'https://paragonfarms.netlify.app',
             'https://paragonfarmsltd.com',
         ],
@@ -96,6 +102,7 @@ io.on('connection', (socket) => {
 });
 app.use(body_parser_1.default.json());
 app.use('/api/v1/blogs', blogRoutes_1.default);
+app.use('/api/v1/applications', applicationRoutes_1.default);
 app.use('/api/v1/company', companyRoutes_1.default);
 app.use('/api/v1/consumptions', consumptionRoutes_1.default);
 app.use('/api/v1/marketing', marketingRoutes_1.default);
@@ -104,6 +111,7 @@ app.use('/api/v1/faqs', faqRoutes_1.default);
 app.use('/api/v1/services', serviceRoutes_1.default);
 app.use('/api/v1/equipments', equipmentRoutes_1.default);
 app.use('/api/v1/emails', emailRoutes_1.default);
+app.use('/api/v1/salaries', salaryRoutes_1.default);
 app.use('/api/v1/expenses', expenseRoutes_1.default);
 app.use('/api/v1/notifications', notificationRoutes_1.default);
 app.use('/api/v1/operations', operationRoutes_1.default);
@@ -111,6 +119,7 @@ app.use('/api/v1/products', productRoutes_1.default);
 app.use('/api/v1/reviews', reviewRoutes_1.default);
 app.use('/api/v1/transactions', transactionRoutes_1.default);
 app.use('/api/v1/socials', socialRoutes_1.default);
+app.use('/api/v1/summary', summaryRoutes_1.default);
 app.use('/api/v1/users', userRoutes_1.default);
 app.use('/api/v1/visitors', visitorRoutes_1.default);
 app.use((req, res, next) => {

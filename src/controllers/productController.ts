@@ -160,6 +160,13 @@ export const postProductStock = async (
       $inc: { units: isProfit ? units : -units },
     })
 
+    if (req.body.parentProductId) {
+      const stock = await Product.findById(req.body.parentProductId)
+      const percent = req.body.units / (stock.units)
+      await Product.findByIdAndUpdate(req.body.parentProductId, { percentageProduction: percent })
+      req.body.percentageProduction = percent
+    }
+
     const stocking = await Stocking.create(req.body)
 
     const result = await queryData<IStocking>(Stocking, req)

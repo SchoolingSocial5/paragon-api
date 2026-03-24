@@ -187,3 +187,34 @@ export const updatePosition = async (req: Request, res: Response) => {
     handleError(res, undefined, undefined, error)
   }
 }
+
+export const deletePosition = async (req: Request, res: Response) => {
+  try {
+    const result = await deleteItem(
+      req,
+      res,
+      Position,
+      [],
+      'Position was deleted successfully'
+    )
+    res.status(200).json(result)
+  } catch (error) {
+    handleError(res, undefined, undefined, error)
+  }
+}
+
+export const deletePositions = async (req: Request, res: Response) => {
+  try {
+    const ids = req.body.ids
+    for (const id of ids) {
+      await Position.findByIdAndDelete(id)
+    }
+    const result = await queryData<IPosition>(Position, req)
+    return res.status(207).json({
+      message: 'The positions were deleted successfully.',
+      ...result,
+    })
+  } catch (error) {
+    handleError(res, undefined, undefined, error)
+  }
+}

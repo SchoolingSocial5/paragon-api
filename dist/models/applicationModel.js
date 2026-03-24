@@ -33,46 +33,38 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Policy = exports.Company = exports.Position = void 0;
+exports.Application = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const PositionSchema = new mongoose_1.Schema({
-    role: { type: String },
-    position: { type: String },
-    duties: { type: String },
-    level: { type: Number },
-    salary: { type: Number },
-    allowSignup: { type: Boolean },
-    createdAt: { type: Date, default: Date.now },
-}, {
-    timestamps: true,
-});
-exports.Position = mongoose_1.default.model('Position', PositionSchema);
-const CompanySchema = new mongoose_1.Schema({
-    name: { type: String },
-    domain: { type: String },
-    email: { type: String },
-    documents: { type: String },
-    finalInstruction: { type: String },
-    welcomeMessage: { type: String },
+const ApplicationSchema = new mongoose_1.Schema({
+    firstName: { type: String },
+    middleName: { type: String },
+    lastName: { type: String },
+    gender: { type: String },
+    maritalStatus: { type: String },
+    dob: Date,
+    nationality: { type: String },
+    state: { type: String },
+    lga: { type: String },
+    homeAddress: { type: String },
+    residenceCountry: { type: String },
+    residenceState: { type: String },
+    residenceLga: { type: String },
+    residenceAddress: { type: String },
     phone: { type: String },
-    headquaters: { type: String },
-    bankName: { type: String },
-    bankAccountNumber: { type: String },
-    bankAccountName: { type: String },
-    allowSignUp: { type: Boolean, default: true },
-    allowApplicant: { type: Boolean, default: false },
+    email: { type: String },
+    refereeName: { type: String },
+    refereePhone: { type: String },
+    refereeRelationship: { type: String },
+    applicationLetter: { type: String },
+    school: { type: String },
+    course: { type: String },
+    degree: { type: String },
+    position: { type: String },
+    username: { type: String },
+    certificateUrl: { type: String },
+    photoUrl: { type: String },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,
 });
-exports.Company = mongoose_1.default.model('Company', CompanySchema);
-const PolicySchema = new mongoose_1.Schema({
-    name: { type: String, default: '' },
-    title: { type: String, default: '' },
-    content: { type: String, default: '' },
-    category: { type: String, default: '' },
-    createdAt: { type: Date, default: Date.now },
-}, {
-    timestamps: true,
-});
-exports.Policy = mongoose_1.default.model('Policy', PolicySchema);
+exports.Application = mongoose_1.default.model('Application', ApplicationSchema);

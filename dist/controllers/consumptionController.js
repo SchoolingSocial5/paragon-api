@@ -22,9 +22,15 @@ const createConsumption = (req, res) => __awaiter(void 0, void 0, void 0, functi
         uploadedFiles.forEach((file) => {
             req.body[file.fieldName] = file.s3Url;
         });
-        yield productModel_1.Product.findByIdAndUpdate(req.body.feedId, {
-            $inc: { units: -1 * (req.body.consumption || 1) },
-        });
+        const product = req.body.feed;
+        if (!product.toLowerCase().includes("water")) {
+            yield productModel_1.Product.findByIdAndUpdate(req.body.feedId, {
+                $inc: { units: -1 * (req.body.consumption || 1) },
+            });
+        }
+        const pro = yield productModel_1.Product.findById(req.body.feedId);
+        req.body.amount = Number(pro.costPrice) * Number(req.body.consumption);
+        req.body.unitPrice = Number(pro.costPrice);
         const consumption = yield consumptionModel_1.Consumption.create(req.body);
         const result = yield (0, query_1.queryData)(consumptionModel_1.Consumption, req);
         app_1.io.emit("consumption", { consumption });

@@ -34,6 +34,7 @@ export interface ICompany extends Document {
   finalInstruction: string
   phone: string
   allowSignup: boolean
+  allowApplicant: boolean
   headqauters: string
   newVersion: string
   newVersionLink: string
@@ -53,6 +54,7 @@ const CompanySchema: Schema = new Schema(
     bankAccountNumber: { type: String },
     bankAccountName: { type: String },
     allowSignUp: { type: Boolean, default: true },
+    allowApplicant: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },
   },
   {

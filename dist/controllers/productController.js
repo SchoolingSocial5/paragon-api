@@ -142,6 +142,12 @@ const postProductStock = (req, res) => __awaiter(void 0, void 0, void 0, functio
         yield productModel_1.Product.findByIdAndUpdate(req.body.productId, {
             $inc: { units: isProfit ? units : -units },
         });
+        if (req.body.parentProductId) {
+            const stock = yield productModel_1.Product.findById(req.body.parentProductId);
+            const percent = req.body.units / (stock.units);
+            yield productModel_1.Product.findByIdAndUpdate(req.body.parentProductId, { percentageProduction: percent });
+            req.body.percentageProduction = percent;
+        }
         const stocking = yield productModel_1.Stocking.create(req.body);
         const result = yield (0, query_1.queryData)(productModel_1.Stocking, req);
         app_1.io.emit('stocking', { stocking, production: stocking });

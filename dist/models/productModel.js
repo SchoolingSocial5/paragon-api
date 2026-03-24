@@ -48,6 +48,7 @@ const ProductSchema = new mongoose_1.Schema({
     units: { type: Number },
     unitPerPurchase: { type: Number, default: 1 },
     price: { type: Number },
+    percentageProduction: { type: Number },
     discount: { type: Number },
     costPrice: { type: Number },
     isBuyable: { type: Boolean, default: false },
@@ -65,6 +66,7 @@ const StockingSchema = new mongoose_1.Schema({
     productId: { type: String },
     video: { type: String },
     amount: { type: Number },
+    percentageProduction: { type: Number },
     isProfit: { type: Boolean },
     createdAt: { type: Date, default: Date.now },
 }, {

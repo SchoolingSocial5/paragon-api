@@ -5,6 +5,8 @@ export interface IConsumption extends Document {
   birds: number
   birdAge: string
   consumption: number
+  amount: number
+  unitPrice: number
   birdClass: string
   feed: string
   weight: string
@@ -17,6 +19,8 @@ const ConsumptionSchema: Schema = new Schema(
     birds: { type: Number },
     birdAge: { type: String },
     consumption: { type: Number },
+    amount: { type: Number },
+    unitPrice: { type: Number },
     birdClass: { type: String },
     feed: { type: String },
     feedId: { type: String },

@@ -16,9 +16,16 @@ export const createConsumption = async (
       req.body[file.fieldName] = file.s3Url
     })
 
-    await Product.findByIdAndUpdate(req.body.feedId, {
-      $inc: { units: -1 * (req.body.consumption || 1) },
-    })
+    const product = req.body.feed
+    if (!product.toLowerCase().includes("water")) {
+      await Product.findByIdAndUpdate(req.body.feedId, {
+        $inc: { units: -1 * (req.body.consumption || 1) },
+      })
+    }
+
+    const pro = await Product.findById(req.body.feedId)
+    req.body.amount = Number(pro.costPrice) * Number(req.body.consumption)
+    req.body.unitPrice = Number(pro.costPrice)
     const consumption = await Consumption.create(req.body)
     const result = await queryData<IConsumption>(Consumption, req)
     io.emit("consumption", { consumption })

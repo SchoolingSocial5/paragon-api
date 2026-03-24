@@ -10,6 +10,7 @@ export interface IProduct extends Document {
   discount: number
   costPrice: number
   price: number
+  percentageProduction: number
   description: string
   picture: string
   createdAt: Date
@@ -33,6 +34,7 @@ const ProductSchema: Schema = new Schema(
     units: { type: Number },
     unitPerPurchase: { type: Number, default: 1 },
     price: { type: Number },
+    percentageProduction: { type: Number },
     discount: { type: Number },
     costPrice: { type: Number },
     isBuyable: { type: Boolean, default: false },
@@ -53,6 +55,7 @@ export interface IStocking extends Document {
   productId: string
   video: string
   amount: number
+  percentageProduction: number
   isProfit: boolean
 }
 
@@ -66,6 +69,7 @@ const StockingSchema: Schema = new Schema(
     productId: { type: String },
     video: { type: String },
     amount: { type: Number },
+    percentageProduction: { type: Number },
     isProfit: { type: Boolean },
     createdAt: { type: Date, default: Date.now },
   },

@@ -39,6 +39,8 @@ const ConsumptionSchema = new mongoose_1.Schema({
     birds: { type: Number },
     birdAge: { type: String },
     consumption: { type: Number },
+    amount: { type: Number },
+    unitPrice: { type: Number },
     birdClass: { type: String },
     feed: { type: String },
     feedId: { type: String },

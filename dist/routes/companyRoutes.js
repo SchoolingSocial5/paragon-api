@@ -12,10 +12,12 @@ router.route('/').get(companyController_1.getCompany).patch(upload.any(), compan
 router.route('/reset').patch(upload.any(), companyController_1.resetRecord);
 router.route('/policy').get(companyController_1.getPolcies).post(upload.any(), companyController_1.createPolicy);
 router.route('/positions').get(companyController_1.getPositions).post(upload.any(), companyController_1.createPosition);
+router.route('/positions/mass-delete').patch(upload.any(), companyController_1.deletePositions);
 router
     .route('/positions/:id')
     .get(companyController_1.getPositionById)
-    .patch(upload.any(), companyController_1.updatePosition);
+    .patch(upload.any(), companyController_1.updatePosition)
+    .delete(companyController_1.deletePosition);
 router
     .route('/policy/:id')
     .get(companyController_1.getPolicyById)

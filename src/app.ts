@@ -6,6 +6,7 @@ import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
 import { handleError } from './utils/errorHandler'
 import blogRoutes from './routes/blogRoutes'
+import applicationRoutes from './routes/applicationRoutes'
 import companyRoutes from './routes/companyRoutes'
 import consumptionRoutes from './routes/consumptionRoutes'
 import faqRoutes from './routes/faqRoutes'
@@ -16,11 +17,13 @@ import emailRoutes from './routes/emailRoutes'
 import equipmentRoutes from './routes/equipmentRoutes'
 import visitorRoutes from './routes/visitorRoutes'
 import expenseRoutes from './routes/expenseRoutes'
+import summaryRoutes from './routes/summaryRoutes'
 import notificationRoutes from './routes/notificationRoutes'
 import operationRoutes from './routes/operationRoutes'
 import productRoutes from './routes/productRoutes'
 import reviewRoutes from './routes/reviewRoutes'
 import socialRoutes from './routes/socialRoutes'
+import salaryRoutes from './routes/salaryRoutes'
 import transactionRoutes from './routes/transactionRoutes'
 import userRoutes from './routes/users/userRoutes'
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
@@ -49,6 +52,7 @@ app.use(
     origin: [
       'http://localhost:3000',
       'http://localhost:3001',
+      'http://localhost:3002',
       'https://paragonfarms.netlify.app',
       'https://paragonfarmsltd.com',
     ],
@@ -62,6 +66,8 @@ const io = new Server(server, {
   cors: {
     origin: [
       'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
       'https://paragonfarms.netlify.app',
       'https://paragonfarmsltd.com',
     ],
@@ -95,6 +101,7 @@ io.on('connection', (socket) => {
 app.use(bodyParser.json())
 
 app.use('/api/v1/blogs', blogRoutes)
+app.use('/api/v1/applications', applicationRoutes)
 app.use('/api/v1/company', companyRoutes)
 app.use('/api/v1/consumptions', consumptionRoutes)
 app.use('/api/v1/marketing', marketingRoutes)
@@ -103,6 +110,7 @@ app.use('/api/v1/faqs', faqRoutes)
 app.use('/api/v1/services', serviceRoutes)
 app.use('/api/v1/equipments', equipmentRoutes)
 app.use('/api/v1/emails', emailRoutes)
+app.use('/api/v1/salaries', salaryRoutes)
 app.use('/api/v1/expenses', expenseRoutes)
 app.use('/api/v1/notifications', notificationRoutes)
 app.use('/api/v1/operations', operationRoutes)
@@ -110,6 +118,7 @@ app.use('/api/v1/products', productRoutes)
 app.use('/api/v1/reviews', reviewRoutes)
 app.use('/api/v1/transactions', transactionRoutes)
 app.use('/api/v1/socials', socialRoutes)
+app.use('/api/v1/summary', summaryRoutes)
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/visitors', visitorRoutes)
 
