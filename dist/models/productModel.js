@@ -52,6 +52,9 @@ const ProductSchema = new mongoose_1.Schema({
     discount: { type: Number },
     costPrice: { type: Number },
     isBuyable: { type: Boolean, default: false },
+    type: { type: String, enum: ['Feed', 'Medicine', 'Water', 'Livestock', 'General'], default: 'General' },
+    isProducing: { type: Boolean, default: false },
+    pId: { type: String },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,
@@ -68,6 +71,9 @@ const StockingSchema = new mongoose_1.Schema({
     amount: { type: Number },
     percentageProduction: { type: Number },
     isProfit: { type: Boolean },
+    pen: { type: String },
+    purchaseUnit: { type: String },
+    unitPerPurchase: { type: Number },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,

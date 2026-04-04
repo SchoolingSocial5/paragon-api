@@ -12,6 +12,7 @@ import consumptionRoutes from './routes/consumptionRoutes'
 import faqRoutes from './routes/faqRoutes'
 import serviceRoutes from './routes/serviceRoutes'
 import marketingRoutes from './routes/marketingRoutes'
+import mortalityRoutes from './routes/mortalityRoutes'
 import strategyRoutes from './routes/strategyRoutes'
 import emailRoutes from './routes/emailRoutes'
 import equipmentRoutes from './routes/equipmentRoutes'
@@ -26,6 +27,8 @@ import socialRoutes from './routes/socialRoutes'
 import salaryRoutes from './routes/salaryRoutes'
 import transactionRoutes from './routes/transactionRoutes'
 import userRoutes from './routes/users/userRoutes'
+import columnRoutes from './routes/columnRoutes'
+import penRoutes from './routes/penRoutes'
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
 import { UsersSocket } from './routes/socket/usersSocket'
 import { createActivity } from './controllers/activityController'
@@ -53,8 +56,8 @@ app.use(
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:3002',
-      'https://paragonfarms.netlify.app',
-      'https://paragonfarmsltd.com',
+      'https://sbgegg.netlify.app',
+      'https://sbgeggfarm.com',
     ],
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     credentials: true,
@@ -68,8 +71,8 @@ const io = new Server(server, {
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:3002',
-      'https://paragonfarms.netlify.app',
-      'https://paragonfarmsltd.com',
+      'https://sbgegg.netlify.app',
+      'https://sbgeggfarm.com',
     ],
     methods: ['GET', 'POST'],
     credentials: true,
@@ -105,6 +108,7 @@ app.use('/api/v1/applications', applicationRoutes)
 app.use('/api/v1/company', companyRoutes)
 app.use('/api/v1/consumptions', consumptionRoutes)
 app.use('/api/v1/marketing', marketingRoutes)
+app.use('/api/v1/mortalities', mortalityRoutes)
 app.use('/api/v1/strategies', strategyRoutes)
 app.use('/api/v1/faqs', faqRoutes)
 app.use('/api/v1/services', serviceRoutes)
@@ -121,6 +125,8 @@ app.use('/api/v1/socials', socialRoutes)
 app.use('/api/v1/summary', summaryRoutes)
 app.use('/api/v1/users', userRoutes)
 app.use('/api/v1/visitors', visitorRoutes)
+app.use('/api/v1/columns', columnRoutes)
+app.use('/api/v1/pens', penRoutes)
 
 app.use((req, res, next) => {
   handleError(res, 404, `Request not found: ${req.method} ${req.originalUrl}`)

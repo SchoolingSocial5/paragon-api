@@ -33,47 +33,12 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Policy = exports.Company = exports.Position = void 0;
+exports.Column = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const PositionSchema = new mongoose_1.Schema({
-    role: { type: String },
-    position: { type: String },
-    duties: { type: String },
-    penHouse: { type: String },
-    level: { type: Number },
-    salary: { type: Number },
-    allowSignup: { type: Boolean },
+const ColumnSchema = new mongoose_1.Schema({
+    name: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
 }, {
     timestamps: true,
 });
-exports.Position = mongoose_1.default.model('Position', PositionSchema);
-const CompanySchema = new mongoose_1.Schema({
-    name: { type: String },
-    domain: { type: String },
-    email: { type: String },
-    documents: { type: String },
-    finalInstruction: { type: String },
-    welcomeMessage: { type: String },
-    phone: { type: String },
-    headquaters: { type: String },
-    bankName: { type: String },
-    bankAccountNumber: { type: String },
-    bankAccountName: { type: String },
-    allowSignUp: { type: Boolean, default: true },
-    allowApplicant: { type: Boolean, default: false },
-    createdAt: { type: Date, default: Date.now },
-}, {
-    timestamps: true,
-});
-exports.Company = mongoose_1.default.model('Company', CompanySchema);
-const PolicySchema = new mongoose_1.Schema({
-    name: { type: String, default: '' },
-    title: { type: String, default: '' },
-    content: { type: String, default: '' },
-    category: { type: String, default: '' },
-    createdAt: { type: Date, default: Date.now },
-}, {
-    timestamps: true,
-});
-exports.Policy = mongoose_1.default.model('Policy', PolicySchema);
+exports.Column = mongoose_1.default.model('Column', ColumnSchema);

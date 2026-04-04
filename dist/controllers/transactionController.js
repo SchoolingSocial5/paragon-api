@@ -111,19 +111,35 @@ const createTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 outOfStock,
             });
         }
+        // --- NEW VALIDATION: Customer check before any mutation ---
+        if (req.body.userId === '' || !req.body.userId) {
+            const existingUser = yield userModel_1.User.findOne({ phone: req.body.phone });
+            if (existingUser) {
+                return res.status(400).json({
+                    message: `A customer with this phone number (${req.body.phone}) already exists. Please search and select the customer instead of entering details again.`,
+                });
+            }
+        }
         const bulkOps = cartProducts.map((cartItem) => ({
             updateOne: {
                 filter: { _id: cartItem._id },
                 update: {
-                    $inc: { units: -cartItem.cartUnits * cartItem.unitPerPurchase },
+                    $inc: { units: -cartItem.cartUnits * (cartItem.unitPerPurchase || 1) },
                 },
             },
         }));
         yield productModel_1.Product.bulkWrite(bulkOps);
         const sales = yield transactionModel_1.Transaction.countDocuments();
-        req.body.invoiceNumber = `PG-${req.body.invoiceNumber}${sales + 1}`;
+        req.body.invoiceNumber = `SBG-${req.body.invoiceNumber}${sales + 1}`;
+        if (!req.body.email || req.body.email.trim() === '' || req.body.email === 'undefined') {
+            const namePart = req.body.fullName
+                ? req.body.fullName.toLowerCase().replace(/[^a-z0-9]/g, '')
+                : 'customer';
+            const randomPart = Math.floor(1000 + Math.random() * 9000);
+            req.body.email = `${namePart}${randomPart}@sbg.com`;
+        }
         const transaction = yield transactionModel_1.Transaction.create(req.body);
-        if (req.body.userId === '') {
+        if (!req.body.userId || req.body.userId === '') {
             yield userModel_1.User.findOneAndUpdate({ phone: req.body.phone }, {
                 username: req.body.username ? req.body.username : req.body.email,
                 phone: req.body.phone,
@@ -135,33 +151,36 @@ const createTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, functi
         const user = yield userModel_1.User.findOneAndUpdate({ phone: req.body.phone }, {
             $inc: { totalPurchase: req.body.totalAmount },
         });
-        let notificationResult = null;
+        /*
+        let notificationResult = null
+    
         if (req.body.partPayment) {
-            notificationResult = yield (0, sendNotification_1.sendNotification)('credit', {
-                user,
-                transaction,
-            });
+          notificationResult = await sendNotification('credit', {
+            user,
+            transaction,
+          })
+        } else {
+          notificationResult = await sendNotification('product_purchase', {
+            user,
+            transaction,
+          })
         }
-        else {
-            notificationResult = yield (0, sendNotification_1.sendNotification)('product_purchase', {
-                user,
-                transaction,
-            });
-        }
+    
         if (req.body.from) {
-            app_1.io.emit(`purchase`, {
-                transaction,
-                notification: notificationResult.notification,
-                unread: notificationResult.unread,
-            });
+          io.emit(`purchase`, {
+            transaction,
+            notification: notificationResult.notification,
+            unread: notificationResult.unread,
+          })
         }
+        */
         app_1.io.emit('transaction', { transaction });
         const result = yield (0, query_1.queryData)(productModel_1.Product, req);
         res.status(200).json({
             message: 'The transaction has been created successfully.',
             result,
             transaction,
-            notificationResult,
+            notificationResult: null,
         });
     }
     catch (error) {
@@ -172,16 +191,16 @@ exports.createTrasanction = createTrasanction;
 const massDeleteTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const transactions = yield transactionModel_1.Transaction.find({ _id: { $in: req.body.ids } });
-        yield transactionModel_1.Transaction.deleteMany({ _id: { $in: req.body.ids } });
         for (let x = 0; x < transactions.length; x++) {
             const tx = transactions[x];
             for (let i = 0; i < tx.cartProducts.length; i++) {
                 const cart = tx.cartProducts[i];
-                productModel_1.Product.findByIdAndUpdate(cart._id, {
+                yield productModel_1.Product.findByIdAndUpdate(cart._id, {
                     $inc: { units: cart.cartUnits * cart.unitPerPurchase },
                 });
             }
         }
+        yield transactionModel_1.Transaction.deleteMany({ _id: { $in: req.body.ids } });
         const result = yield (0, query_1.queryData)(transactionModel_1.Transaction, req);
         res.status(200).json({
             message: 'The transactions has been deleted successfully.',
@@ -205,6 +224,27 @@ const getTransactions = (req, res) => __awaiter(void 0, void 0, void 0, function
 exports.getTransactions = getTransactions;
 const updateTransaction = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const oldTransaction = yield transactionModel_1.Transaction.findById(req.params.id);
+        if (!oldTransaction) {
+            return res.status(404).json({ message: 'Transaction not found' });
+        }
+        // Sync inventory if cartUnits changed
+        if (req.body.cartProducts) {
+            const newCart = Array.isArray(req.body.cartProducts) ? req.body.cartProducts : JSON.parse(req.body.cartProducts);
+            const oldCart = oldTransaction.cartProducts;
+            for (const newItem of newCart) {
+                const oldItem = oldCart.find((oi) => oi._id.toString() === newItem._id.toString());
+                if (oldItem) {
+                    const diff = oldItem.cartUnits - newItem.cartUnits;
+                    if (diff !== 0) {
+                        yield productModel_1.Product.findByIdAndUpdate(newItem._id, {
+                            $inc: { units: diff * (newItem.unitPerPurchase || 1) },
+                        });
+                    }
+                }
+            }
+            req.body.cartProducts = newCart;
+        }
         yield transactionModel_1.Transaction.findByIdAndUpdate(req.params.id, req.body);
         const result = yield (0, query_1.queryData)(transactionModel_1.Transaction, req);
         res.status(200).json({

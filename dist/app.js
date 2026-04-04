@@ -27,6 +27,7 @@ const consumptionRoutes_1 = __importDefault(require("./routes/consumptionRoutes"
 const faqRoutes_1 = __importDefault(require("./routes/faqRoutes"));
 const serviceRoutes_1 = __importDefault(require("./routes/serviceRoutes"));
 const marketingRoutes_1 = __importDefault(require("./routes/marketingRoutes"));
+const mortalityRoutes_1 = __importDefault(require("./routes/mortalityRoutes"));
 const strategyRoutes_1 = __importDefault(require("./routes/strategyRoutes"));
 const emailRoutes_1 = __importDefault(require("./routes/emailRoutes"));
 const equipmentRoutes_1 = __importDefault(require("./routes/equipmentRoutes"));
@@ -41,6 +42,8 @@ const socialRoutes_1 = __importDefault(require("./routes/socialRoutes"));
 const salaryRoutes_1 = __importDefault(require("./routes/salaryRoutes"));
 const transactionRoutes_1 = __importDefault(require("./routes/transactionRoutes"));
 const userRoutes_1 = __importDefault(require("./routes/users/userRoutes"));
+const columnRoutes_1 = __importDefault(require("./routes/columnRoutes"));
+const penRoutes_1 = __importDefault(require("./routes/penRoutes"));
 // import { geoipMiddleware } from './middlewares/geoipMiddleware'
 const usersSocket_1 = require("./routes/socket/usersSocket");
 const activityController_1 = require("./controllers/activityController");
@@ -60,8 +63,8 @@ app.use((0, cors_1.default)({
         'http://localhost:3000',
         'http://localhost:3001',
         'http://localhost:3002',
-        'https://paragonfarms.netlify.app',
-        'https://paragonfarmsltd.com',
+        'https://sbgegg.netlify.app',
+        'https://sbgeggfarm.com',
     ],
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     credentials: true,
@@ -73,8 +76,8 @@ const io = new socket_io_1.Server(server, {
             'http://localhost:3000',
             'http://localhost:3001',
             'http://localhost:3002',
-            'https://paragonfarms.netlify.app',
-            'https://paragonfarmsltd.com',
+            'https://sbgegg.netlify.app',
+            'https://sbgeggfarm.com',
         ],
         methods: ['GET', 'POST'],
         credentials: true,
@@ -106,6 +109,7 @@ app.use('/api/v1/applications', applicationRoutes_1.default);
 app.use('/api/v1/company', companyRoutes_1.default);
 app.use('/api/v1/consumptions', consumptionRoutes_1.default);
 app.use('/api/v1/marketing', marketingRoutes_1.default);
+app.use('/api/v1/mortalities', mortalityRoutes_1.default);
 app.use('/api/v1/strategies', strategyRoutes_1.default);
 app.use('/api/v1/faqs', faqRoutes_1.default);
 app.use('/api/v1/services', serviceRoutes_1.default);
@@ -122,6 +126,8 @@ app.use('/api/v1/socials', socialRoutes_1.default);
 app.use('/api/v1/summary', summaryRoutes_1.default);
 app.use('/api/v1/users', userRoutes_1.default);
 app.use('/api/v1/visitors', visitorRoutes_1.default);
+app.use('/api/v1/columns', columnRoutes_1.default);
+app.use('/api/v1/pens', penRoutes_1.default);
 app.use((req, res, next) => {
     (0, errorHandler_1.handleError)(res, 404, `Request not found: ${req.method} ${req.originalUrl}`);
     next();

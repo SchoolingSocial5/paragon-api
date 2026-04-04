@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose'
+import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IProduct extends Document {
   _id: string
@@ -13,11 +13,14 @@ export interface IProduct extends Document {
   percentageProduction: number
   description: string
   picture: string
+  type: 'Feed' | 'Medicine' | 'Water' | 'Livestock' | 'General'
+  isProducing: boolean
   createdAt: Date
   seoTitle: string
   supName: string
   supAddress: string
   supPhone: string
+  pId: string
 }
 
 const ProductSchema: Schema = new Schema(
@@ -38,6 +41,9 @@ const ProductSchema: Schema = new Schema(
     discount: { type: Number },
     costPrice: { type: Number },
     isBuyable: { type: Boolean, default: false },
+    type: { type: String, enum: ['Feed', 'Medicine', 'Water', 'Livestock', 'General'], default: 'General' },
+    isProducing: { type: Boolean, default: false },
+    pId: { type: String },
     createdAt: { type: Date, default: Date.now },
   },
   {
@@ -57,6 +63,9 @@ export interface IStocking extends Document {
   amount: number
   percentageProduction: number
   isProfit: boolean
+  pen: string
+  purchaseUnit: string
+  unitPerPurchase: number
 }
 
 const StockingSchema: Schema = new Schema(
@@ -71,6 +80,9 @@ const StockingSchema: Schema = new Schema(
     amount: { type: Number },
     percentageProduction: { type: Number },
     isProfit: { type: Boolean },
+    pen: { type: String },
+    purchaseUnit: { type: String },
+    unitPerPurchase: { type: Number },
     createdAt: { type: Date, default: Date.now },
   },
   {
