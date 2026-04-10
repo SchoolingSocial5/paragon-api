@@ -1,0 +1,45 @@
+import mongoose, { Schema, Document } from 'mongoose'
+
+export interface IConsumption extends Document {
+  _id: string
+  birds: number
+  birdAge: string
+  consumption: number
+  amount: number
+  unitPrice: number
+  birdClass: string
+  feed: string
+  feedId: string
+  weight: string
+  remark: string
+  consumptionUnit: string
+  pen: string
+  staffName: string
+  createdAt: Date
+}
+
+const ConsumptionSchema: Schema = new Schema(
+  {
+    birds: { type: Number },
+    birdAge: { type: String },
+    consumption: { type: Number },
+    amount: { type: Number },
+    unitPrice: { type: Number },
+    birdClass: { type: String },
+    feed: { type: String },
+    feedId: { type: String },
+    weight: { type: String },
+    remark: { type: String },
+    consumptionUnit: { type: String },
+    pen: { type: String },
+    staffName: { type: String },
+    createdAt: { type: Date, default: Date.now },
+  },
+  {
+    timestamps: true,
+  }
+)
+export const Consumption = mongoose.model<IConsumption>(
+  'Consumption',
+  ConsumptionSchema
+)
