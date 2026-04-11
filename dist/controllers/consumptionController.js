@@ -13,9 +13,9 @@ exports.searchConsumptions = exports.getConsumptions = exports.updateConsumption
 const query_1 = require("../utils/query");
 const fileUpload_1 = require("../utils/fileUpload");
 const errorHandler_1 = require("../utils/errorHandler");
-const consumptionModel_1 = require("../models/consumptionModel");
 const productModel_1 = require("../models/productModel");
 const app_1 = require("../app");
+const consumptionModel_1 = require("../models/consumptionModel");
 const createConsumption = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const uploadedFiles = yield (0, fileUpload_1.uploadFilesToS3)(req);
@@ -71,6 +71,8 @@ const createConsumption = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 delete item._id;
             item.amount = Number(pro.costPrice) * Number(item.consumption);
             item.unitPrice = Number(pro.costPrice);
+            if (!item.type)
+                item.type = pro.type;
             const newConsumption = yield consumptionModel_1.Consumption.create(item);
             app_1.io.emit("consumption", { consumption: newConsumption });
         }

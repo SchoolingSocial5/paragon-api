@@ -2,9 +2,9 @@ import { Request, Response } from 'express'
 import { queryData, search } from '../utils/query'
 import { uploadFilesToS3 } from '../utils/fileUpload'
 import { handleError } from '../utils/errorHandler'
-import { IConsumption, Consumption } from '../models/consumptionModel'
 import { Product } from '../models/productModel'
 import { io } from '../app'
+import { Consumption, IConsumption } from '../models/consumptionModel'
 
 export const createConsumption = async (
   req: Request,
@@ -33,8 +33,8 @@ export const createConsumption = async (
       const productName = item.feed || pro.name
       if (!productName.toLowerCase().includes("water")) {
         if (pro.units < consumptionAmount) {
-          return res.status(400).json({ 
-            message: `Insufficient stock for ${pro.name}. Current stock: ${pro.units}, Required: ${consumptionAmount}` 
+          return res.status(400).json({
+            message: `Insufficient stock for ${pro.name}. Current stock: ${pro.units}, Required: ${consumptionAmount}`
           })
         }
 
@@ -50,7 +50,7 @@ export const createConsumption = async (
           await Product.findByIdAndUpdate(emptyBag._id, {
             $inc: { units: consumptionAmount },
             picture: pro.picture,
-            purchaseUnit: pro.purchaseUnit, 
+            purchaseUnit: pro.purchaseUnit,
           })
         } else {
           await Product.create({
@@ -61,15 +61,16 @@ export const createConsumption = async (
             type: 'General',
             isBuyable: true,
             picture: pro.picture,
-            purchaseUnit: pro.purchaseUnit, 
+            purchaseUnit: pro.purchaseUnit,
           })
         }
       }
-      
+
       if (!item._id) delete item._id
       item.amount = Number(pro.costPrice) * Number(item.consumption)
       item.unitPrice = Number(pro.costPrice)
-      
+      if (!item.type) item.type = pro.type
+
       const newConsumption = await Consumption.create(item)
       io.emit("consumption", { consumption: newConsumption })
     }
@@ -184,4 +185,4 @@ export const getConsumptions = async (req: Request, res: Response) => {
 
 export const searchConsumptions = (req: Request, res: Response) => {
   return search(Consumption, req, res)
-}
+}
