@@ -23,7 +23,7 @@ export interface IProduct extends Document {
   supAddress: string
   supPhone: string
   pId: string
-  penDistributions: { penId: string; penName: string; units: number }[]
+  penDistributions?: { penId: string; penName: string; units: number }[]
 }
 
 const ProductSchema: Schema = new Schema(
@@ -37,7 +37,7 @@ const ProductSchema: Schema = new Schema(
     supAddress: { type: String },
     supPhone: { type: String },
     consumptionUnit: { type: String },
-    units: { type: Number },
+    units: { type: Number, min: 0 },
     unitPerPurchase: { type: Number, default: 1 },
     price: { type: Number },
     percentageProduction: { type: Number },
@@ -47,9 +47,15 @@ const ProductSchema: Schema = new Schema(
     type: { type: String, enum: ['Feed', 'Medicine', 'Water', 'Livestock', 'General'], default: 'General' },
     isProducing: { type: Boolean, default: false },
     isSelling: { type: Boolean, default: false },
-    pId: { type: String },
     dateOfBirth: { type: Date },
-    penDistributions: { type: [Object], default: [] },
+    penDistributions: [
+      {
+        penId: { type: String },
+        penName: { type: String },
+        units: { type: Number, min: 0 },
+      },
+    ],
+    pId: { type: String },
     createdAt: { type: Date, default: Date.now },
   },
   {
@@ -80,7 +86,7 @@ const StockingSchema: Schema = new Schema(
     name: { type: String },
     picture: { type: String },
     reason: { type: String },
-    units: { type: Number },
+    units: { type: Number, min: 0 },
     productId: { type: String },
     video: { type: String },
     amount: { type: Number },

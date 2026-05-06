@@ -44,17 +44,15 @@ const transactionRoutes_1 = __importDefault(require("./routes/transactionRoutes"
 const userRoutes_1 = __importDefault(require("./routes/users/userRoutes"));
 const columnRoutes_1 = __importDefault(require("./routes/columnRoutes"));
 const penRoutes_1 = __importDefault(require("./routes/penRoutes"));
-// import { geoipMiddleware } from './middlewares/geoipMiddleware'
-const usersSocket_1 = require("./routes/socket/usersSocket");
 const activityController_1 = require("./controllers/activityController");
+const usersSocket_1 = require("./routes/socket/usersSocket");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 exports.app = app;
 const server = http_1.default.createServer(app);
 exports.server = server;
-// app.use(geoipMiddleware)
 const requestLogger = (req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} from ${req.country}`);
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     next();
 };
 app.use(requestLogger);

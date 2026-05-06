@@ -1,0 +1,20 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const momentController_1 = require("../../controllers/post/momentController");
+const authMiddleware_1 = require("../../../middleware/authMiddleware");
+const uploadMiddleware_1 = require("../../../middleware/uploadMiddleware");
+const router = (0, express_1.Router)();
+router.get('/', momentController_1.getMoments);
+router.get('/mine', authMiddleware_1.protect, momentController_1.getMyActiveMoment);
+router.post('/', authMiddleware_1.protect, momentController_1.createMoment);
+router.post('/submit', authMiddleware_1.protect, uploadMiddleware_1.momentUpload, momentController_1.submitMoment);
+// Media-level interactions (must come before /:mediaId DELETE to avoid conflict)
+router.post('/:mediaId/view', authMiddleware_1.protect, momentController_1.viewMomentMedia);
+router.post('/:mediaId/like', authMiddleware_1.protect, momentController_1.likeMomentMedia);
+router.post('/:mediaId/comment', authMiddleware_1.protect, momentController_1.commentMomentMedia);
+router.get('/:mediaId/comments', momentController_1.getMomentMediaComments);
+router.get('/:mediaId/views', authMiddleware_1.protect, momentController_1.getMomentMediaViews);
+router.get('/:mediaId/likes', momentController_1.getMomentMediaLikes);
+router.delete('/:mediaId', authMiddleware_1.protect, momentController_1.deleteMomentMedia);
+exports.default = router;

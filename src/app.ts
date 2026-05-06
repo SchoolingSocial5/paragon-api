@@ -29,21 +29,17 @@ import transactionRoutes from './routes/transactionRoutes'
 import userRoutes from './routes/users/userRoutes'
 import columnRoutes from './routes/columnRoutes'
 import penRoutes from './routes/penRoutes'
-// import { geoipMiddleware } from './middlewares/geoipMiddleware'
-import { UsersSocket } from './routes/socket/usersSocket'
 import { createActivity } from './controllers/activityController'
+import { UsersSocket } from './routes/socket/usersSocket'
 
 dotenv.config()
 
 const app: Application = express()
 const server = http.createServer(app)
 
-// app.use(geoipMiddleware)
-
 const requestLogger: RequestHandler = (req, res, next) => {
   console.log(
-    `[${new Date().toISOString()}] ${req.method} ${req.url} from ${(req as any).country
-    }`
+    `[${new Date().toISOString()}] ${req.method} ${req.url}`
   )
   next()
 }

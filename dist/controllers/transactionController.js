@@ -76,11 +76,21 @@ const createTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, functi
         uploadedFiles.forEach((file) => {
             req.body[file.fieldName] = file.s3Url;
         });
-        const cartProducts = JSON.parse(req.body.cartProducts);
-        req.body.cartProducts = JSON.parse(req.body.cartProducts);
-        req.body.status = JSON.parse(req.body.status);
-        req.body.isProfit = JSON.parse(req.body.isProfit);
-        req.body.partPayment = JSON.parse(req.body.partPayment);
+        const safeParse = (val, fallback) => {
+            try {
+                if (typeof val === 'string' && val !== 'undefined')
+                    return JSON.parse(val);
+                return (val === 'undefined' || val === undefined) ? fallback : val;
+            }
+            catch (e) {
+                return fallback;
+            }
+        };
+        const cartProducts = safeParse(req.body.cartProducts, []);
+        req.body.cartProducts = cartProducts;
+        req.body.status = safeParse(req.body.status, true);
+        req.body.isProfit = safeParse(req.body.isProfit, true);
+        req.body.partPayment = safeParse(req.body.partPayment, 0);
         if (!Array.isArray(cartProducts) || cartProducts.length === 0) {
             return res.status(400).json({ message: 'Cart is empty' });
         }
@@ -122,13 +132,21 @@ const createTrasanction = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         const bulkOps = cartProducts.map((cartItem) => ({
             updateOne: {
-                filter: { _id: cartItem._id },
+                filter: {
+                    _id: cartItem._id,
+                    units: { $gte: cartItem.cartUnits * (cartItem.unitPerPurchase || 1) }
+                },
                 update: {
                     $inc: { units: -cartItem.cartUnits * (cartItem.unitPerPurchase || 1) },
                 },
             },
         }));
-        yield productModel_1.Product.bulkWrite(bulkOps);
+        const bulkResult = yield productModel_1.Product.bulkWrite(bulkOps);
+        if (bulkResult.modifiedCount !== cartProducts.length) {
+            return res.status(400).json({
+                message: 'Some items could not be processed due to insufficient stock. Please refresh and try again.',
+            });
+        }
         const sales = yield transactionModel_1.Transaction.countDocuments();
         req.body.invoiceNumber = `SBG-${req.body.invoiceNumber}${sales + 1}`;
         if (!req.body.email || req.body.email.trim() === '' || req.body.email === 'undefined') {
@@ -237,8 +255,18 @@ const updateTransaction = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 if (oldItem) {
                     const diff = oldItem.cartUnits - newItem.cartUnits;
                     if (diff !== 0) {
+                        const amountChange = diff * (newItem.unitPerPurchase || 1);
+                        // If we are increasing quantity (diff is negative), check stock
+                        if (amountChange < 0) {
+                            const product = yield productModel_1.Product.findById(newItem._id);
+                            if (!product || product.units < Math.abs(amountChange)) {
+                                return res.status(400).json({
+                                    message: `Insufficient stock for ${newItem.name}. Available: ${(product === null || product === void 0 ? void 0 : product.units) || 0}`
+                                });
+                            }
+                        }
                         yield productModel_1.Product.findByIdAndUpdate(newItem._id, {
-                            $inc: { units: diff * (newItem.unitPerPurchase || 1) },
+                            $inc: { units: amountChange },
                         });
                     }
                 }
